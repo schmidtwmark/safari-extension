@@ -362,6 +362,18 @@
     const platformName = isReddit ? 'Reddit' : isBluesky ? 'Bluesky' : 'Social';
     const mediaNote = isReddit ? 'Media automatically opens/closes when navigating (Reddit only)' : 'Navigate posts with keyboard shortcuts';
 
+    // Build gallery shortcuts for Reddit
+    const galleryShortcuts = isReddit ? `
+      <div class="reddit-kb-nav-shortcut">
+        <kbd>[</kbd>
+        <span>Previous image in gallery</span>
+      </div>
+      <div class="reddit-kb-nav-shortcut">
+        <kbd>]</kbd>
+        <span>Next image in gallery</span>
+      </div>
+    ` : '';
+
     overlay.innerHTML = `
       <div class="reddit-kb-nav-help-content">
         <h3>${platformName} Keyboard Navigator - Shortcuts</h3>
@@ -386,6 +398,7 @@
             <kbd>L</kbd>
             <span>Open link (new tab)</span>
           </div>
+          ${galleryShortcuts}
           <div class="reddit-kb-nav-shortcut">
             <kbd>?</kbd>
             <span>Toggle this help menu</span>
@@ -404,6 +417,41 @@
         overlay.remove();
       }
     });
+  }
+
+  // Navigate to previous image in Reddit gallery ([ key)
+  function galleryPrevious() {
+    if (!isReddit) return;
+
+    // Look for the previous button in an open gallery
+    // Reddit galleries have different selectors depending on the type
+    const prevButton = document.querySelector('.gallery-preview .next-button, .gallery-preview .previous-button, button[aria-label*="revious"], button[aria-label*="Previous"]');
+
+    // Also check for lightbox gallery
+    const lightboxPrev = document.querySelector('.lightbox .previous-button, .lightbox button[aria-label*="revious"]');
+
+    if (prevButton && prevButton.getAttribute('aria-label')?.toLowerCase().includes('previous')) {
+      prevButton.click();
+    } else if (lightboxPrev) {
+      lightboxPrev.click();
+    }
+  }
+
+  // Navigate to next image in Reddit gallery (] key)
+  function galleryNext() {
+    if (!isReddit) return;
+
+    // Look for the next button in an open gallery
+    const nextButton = document.querySelector('.gallery-preview .next-button, button[aria-label*="ext"], button[aria-label*="Next"]');
+
+    // Also check for lightbox gallery
+    const lightboxNext = document.querySelector('.lightbox .next-button, .lightbox button[aria-label*="ext"]');
+
+    if (nextButton && nextButton.getAttribute('aria-label')?.toLowerCase().includes('next')) {
+      nextButton.click();
+    } else if (lightboxNext) {
+      lightboxNext.click();
+    }
   }
 
   // Handle keyboard events
@@ -451,6 +499,14 @@
       case 'l':
         event.preventDefault();
         openLink();
+        break;
+      case '[':
+        event.preventDefault();
+        galleryPrevious();
+        break;
+      case ']':
+        event.preventDefault();
+        galleryNext();
         break;
       case '?':
         event.preventDefault();

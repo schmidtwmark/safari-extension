@@ -11,6 +11,8 @@ Navigate Reddit and Bluesky with powerful keyboard shortcuts:
 - **H** - Hide the currently selected post
 - **C** - Open comments/post (same tab)
 - **L** - Open link (new tab)
+- **[** - Previous image in gallery (Reddit only)
+- **]** - Next image in gallery (Reddit only)
 - **?** - Toggle help menu with all keyboard shortcuts
 
 **Automatic Features:**
@@ -21,6 +23,7 @@ Navigate Reddit and Bluesky with powerful keyboard shortcuts:
 - Media (images/videos) automatically opens when you select a post
 - Media automatically closes when you navigate to a different post
 - Promoted/sponsored posts are automatically hidden
+- Navigate through image galleries/albums with [ and ] keys
 
 **Bluesky-Specific Features:**
 - Navigate through your feed with keyboard shortcuts
@@ -63,6 +66,7 @@ iOS Safari extensions require conversion to an app. Follow Apple's guide to crea
 5. Press **C** to open the comments for the current post
 6. Press **L** to open the link in a new tab
 7. Press **H** to hide posts you're not interested in
+8. When viewing image galleries/albums, use **[** and **]** to navigate between images
 
 ### On Bluesky (bsky.app):
 1. Navigate to bsky.app

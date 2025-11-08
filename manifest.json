@@ -10,6 +10,7 @@
         "*://old.reddit.com/*",
         "*://*.old.reddit.com/*",
         "*://reddit.com/*"
+        "*://*.reddit.com/*"
       ],
       "js": ["content.js"],
       "css": ["styles.css"],

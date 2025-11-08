@@ -1,0 +1,11 @@
+/* Visual indicator for the currently selected post */
+.reddit-kb-nav-selected {
+  outline: 3px solid #0079d3 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(0, 121, 211, 0.05) !important;
+}
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}

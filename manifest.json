@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Reddit Keyboard Navigator",
+  "version": "1.0",
+  "description": "Navigate old Reddit using keyboard shortcuts (J/K for navigation, H to hide)",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://old.reddit.com/*",
+        "*://*.old.reddit.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ]
+}

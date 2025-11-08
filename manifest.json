@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Reddit Keyboard Navigator",
-  "version": "1.0",
-  "description": "Navigate old Reddit using keyboard shortcuts (J/K for navigation, H to hide)",
+  "name": "Social Keyboard Navigator",
+  "version": "2.0",
+  "description": "Navigate Reddit and Bluesky using keyboard shortcuts (J/K for navigation, H to hide)",
   "permissions": [],
   "content_scripts": [
     {
@@ -10,7 +10,9 @@
         "*://old.reddit.com/*",
         "*://*.old.reddit.com/*",
         "*://reddit.com/*",
-        "*://*.reddit.com/*"
+        "*://*.reddit.com/*",
+        "*://bsky.app/*",
+        "*://*.bsky.app/*"
       ],
       "js": ["content.js"],
       "css": ["styles.css"],

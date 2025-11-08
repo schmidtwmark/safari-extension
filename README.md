@@ -4,13 +4,19 @@ A lightweight Safari extension that brings essential keyboard navigation to old 
 
 ## Features
 
-Navigate old Reddit with simple keyboard shortcuts:
+Navigate old Reddit with powerful keyboard shortcuts:
 
 - **J** - Navigate down to the next post
 - **K** - Navigate up to the previous post
 - **H** - Hide the currently selected post
+- **C** - Open comments for the selected post (same tab)
+- **L** - Open link for the selected post (new tab)
+- **?** - Toggle help menu with all keyboard shortcuts
 
-The currently selected post is highlighted with a blue outline for easy visibility.
+**Automatic Features:**
+- Media (images/videos) automatically opens when you select a post
+- Media automatically closes when you navigate to a different post
+- Selected post is highlighted with a blue outline for easy visibility
 
 ## Installation
 
@@ -41,9 +47,12 @@ iOS Safari extensions require conversion to an app. Follow Apple's guide to crea
 ## Usage
 
 1. Navigate to old.reddit.com (the extension only works with old Reddit)
-2. Press **J** to start navigating - the first post will be highlighted
-3. Use **J** and **K** to move between posts
-4. Press **H** to hide posts you're not interested in
+2. Press **?** to see the help menu with all available shortcuts
+3. Press **J** to start navigating - the first post will be highlighted and its media will open automatically
+4. Use **J** and **K** to move between posts (media opens/closes automatically)
+5. Press **C** to open the comments for the current post
+6. Press **L** to open the link in a new tab
+7. Press **H** to hide posts you're not interested in
 
 The extension respects text input fields - keyboard shortcuts won't activate when you're typing in a text box or search field.
 

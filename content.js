@@ -1,11 +1,12 @@
 // Reddit Keyboard Navigator for Old Reddit
-// J: Navigate down, K: Navigate up, H: Hide post
+// Keyboard shortcuts for navigating and interacting with posts
 
 (function() {
   'use strict';
 
   const SELECTED_CLASS = 'reddit-kb-nav-selected';
   let currentSelectedIndex = -1;
+  let currentExpandedPost = null;
 
   // Get all post elements on the page
   function getPosts() {
@@ -19,6 +20,28 @@
     posts.forEach(post => post.classList.remove(SELECTED_CLASS));
   }
 
+  // Close media for a post
+  function closeMedia(post) {
+    if (!post) return;
+
+    const expando = post.querySelector('.expando-button');
+    if (expando && expando.classList.contains('expanded')) {
+      expando.click();
+    }
+  }
+
+  // Open media for a post
+  function openMedia(post) {
+    if (!post) return;
+
+    const expando = post.querySelector('.expando-button');
+    if (expando && !expando.classList.contains('expanded')) {
+      expando.click();
+      return true;
+    }
+    return false;
+  }
+
   // Select a post by index
   function selectPost(index) {
     const posts = getPosts();
@@ -29,11 +52,20 @@
     if (index < 0) index = 0;
     if (index >= posts.length) index = posts.length - 1;
 
+    // Close media on the previously selected post
+    if (currentExpandedPost) {
+      closeMedia(currentExpandedPost);
+    }
+
     clearSelection();
     currentSelectedIndex = index;
 
     const selectedPost = posts[index];
     selectedPost.classList.add(SELECTED_CLASS);
+
+    // Auto-open media for the newly selected post
+    openMedia(selectedPost);
+    currentExpandedPost = selectedPost;
 
     // Scroll the selected post into view
     selectedPost.scrollIntoView({
@@ -116,8 +148,103 @@
     }
   }
 
+  // Open comments for the currently selected post (C key)
+  function openComments() {
+    const posts = getPosts();
+    if (currentSelectedIndex === -1 || currentSelectedIndex >= posts.length) return;
+
+    const currentPost = posts[currentSelectedIndex];
+    const commentsLink = currentPost.querySelector('a.comments');
+
+    if (commentsLink) {
+      window.location.href = commentsLink.href;
+    }
+  }
+
+  // Open the link for the currently selected post (L key)
+  function openLink() {
+    const posts = getPosts();
+    if (currentSelectedIndex === -1 || currentSelectedIndex >= posts.length) return;
+
+    const currentPost = posts[currentSelectedIndex];
+    const titleLink = currentPost.querySelector('a.title');
+
+    if (titleLink) {
+      window.open(titleLink.href, '_blank');
+    }
+  }
+
+  // Toggle help overlay (? key)
+  function toggleHelp() {
+    let helpOverlay = document.getElementById('reddit-kb-nav-help');
+
+    if (helpOverlay) {
+      helpOverlay.remove();
+    } else {
+      createHelpOverlay();
+    }
+  }
+
+  // Create help overlay
+  function createHelpOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'reddit-kb-nav-help';
+    overlay.innerHTML = `
+      <div class="reddit-kb-nav-help-content">
+        <h3>Reddit Keyboard Navigator - Shortcuts</h3>
+        <div class="reddit-kb-nav-shortcuts">
+          <div class="reddit-kb-nav-shortcut">
+            <kbd>J</kbd>
+            <span>Navigate to next post</span>
+          </div>
+          <div class="reddit-kb-nav-shortcut">
+            <kbd>K</kbd>
+            <span>Navigate to previous post</span>
+          </div>
+          <div class="reddit-kb-nav-shortcut">
+            <kbd>H</kbd>
+            <span>Hide current post</span>
+          </div>
+          <div class="reddit-kb-nav-shortcut">
+            <kbd>C</kbd>
+            <span>Open comments (same tab)</span>
+          </div>
+          <div class="reddit-kb-nav-shortcut">
+            <kbd>L</kbd>
+            <span>Open link (new tab)</span>
+          </div>
+          <div class="reddit-kb-nav-shortcut">
+            <kbd>?</kbd>
+            <span>Toggle this help menu</span>
+          </div>
+        </div>
+        <p class="reddit-kb-nav-note">Media automatically opens/closes when navigating</p>
+        <p class="reddit-kb-nav-close">Press <kbd>?</kbd> or <kbd>ESC</kbd> to close</p>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Close on click
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.remove();
+      }
+    });
+  }
+
   // Handle keyboard events
   function handleKeyPress(event) {
+    // Allow ESC to close help overlay
+    if (event.key === 'Escape') {
+      const helpOverlay = document.getElementById('reddit-kb-nav-help');
+      if (helpOverlay) {
+        helpOverlay.remove();
+        event.preventDefault();
+        return;
+      }
+    }
+
     // Don't trigger if user is typing in an input field
     const activeElement = document.activeElement;
     if (activeElement && (
@@ -143,6 +270,18 @@
       case 'h':
         event.preventDefault();
         hideCurrentPost();
+        break;
+      case 'c':
+        event.preventDefault();
+        openComments();
+        break;
+      case 'l':
+        event.preventDefault();
+        openLink();
+        break;
+      case '?':
+        event.preventDefault();
+        toggleHelp();
         break;
     }
   }

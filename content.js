@@ -11,7 +11,53 @@
   // Get all post elements on the page
   function getPosts() {
     // In old Reddit, posts are .thing elements with .link class
-    return Array.from(document.querySelectorAll('.thing.link:not(.hidden)'));
+    // Exclude promoted posts
+    return Array.from(document.querySelectorAll('.thing.link:not(.hidden):not(.promoted)'));
+  }
+
+  // Hide all promoted posts
+  function hidePromotedPosts() {
+    const promotedPosts = document.querySelectorAll('.thing.promoted');
+    promotedPosts.forEach(post => {
+      post.style.display = 'none';
+      post.classList.add('hidden');
+    });
+  }
+
+  // Save the current selection to session storage
+  function saveSelection() {
+    const posts = getPosts();
+    if (currentSelectedIndex >= 0 && currentSelectedIndex < posts.length) {
+      const currentPost = posts[currentSelectedIndex];
+      const postId = currentPost.getAttribute('data-fullname');
+      if (postId) {
+        sessionStorage.setItem('reddit-kb-nav-selected', postId);
+        sessionStorage.setItem('reddit-kb-nav-url', window.location.href);
+      }
+    }
+  }
+
+  // Restore the previous selection from session storage
+  function restoreSelection() {
+    const savedUrl = sessionStorage.getItem('reddit-kb-nav-url');
+    const savedPostId = sessionStorage.getItem('reddit-kb-nav-selected');
+
+    // Only restore if we're on the same page we left from
+    if (savedUrl === window.location.href && savedPostId) {
+      const posts = getPosts();
+      const index = posts.findIndex(post => post.getAttribute('data-fullname') === savedPostId);
+
+      if (index !== -1) {
+        // Small delay to ensure page is fully loaded
+        setTimeout(() => {
+          selectPost(index);
+        }, 200);
+      }
+
+      // Clear the saved selection after restoring
+      sessionStorage.removeItem('reddit-kb-nav-selected');
+      sessionStorage.removeItem('reddit-kb-nav-url');
+    }
   }
 
   // Remove selection highlight from all posts
@@ -171,6 +217,8 @@
     const commentsLink = currentPost.querySelector('a.comments');
 
     if (commentsLink) {
+      // Save selection before navigating
+      saveSelection();
       window.location.href = commentsLink.href;
     }
   }
@@ -302,8 +350,14 @@
 
   // Initialize
   function init() {
+    // Hide promoted posts
+    hidePromotedPosts();
+
     // Add keyboard event listener
     document.addEventListener('keydown', handleKeyPress);
+
+    // Restore previous selection if returning from comments/link
+    restoreSelection();
 
     console.log('Reddit Keyboard Navigator loaded');
   }

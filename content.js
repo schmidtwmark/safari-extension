@@ -64,14 +64,28 @@
     selectedPost.classList.add(SELECTED_CLASS);
 
     // Auto-open media for the newly selected post
-    openMedia(selectedPost);
+    const hasMedia = openMedia(selectedPost);
     currentExpandedPost = selectedPost;
 
-    // Scroll the selected post into view
-    selectedPost.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    });
+    // Scroll to center the media if it exists, otherwise center the post
+    if (hasMedia) {
+      // Wait for media to expand, then scroll to it
+      setTimeout(() => {
+        const expando = selectedPost.querySelector('.expando');
+        if (expando) {
+          expando.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
+      }, 100);
+    } else {
+      // No media, just scroll the post title into view
+      selectedPost.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
   }
 
   // Navigate to the next post (J key)

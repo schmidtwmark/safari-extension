@@ -18,6 +18,8 @@ Navigate Reddit and Bluesky with powerful keyboard shortcuts:
 **Automatic Features:**
 - Selected post is highlighted with a blue outline for easy visibility
 - Selection is restored when returning from comments page (using browser back button)
+- Navigation is context-aware: J/K navigate from your current scroll position
+- Videos automatically pause when navigating away from a post
 
 **Reddit-Specific Features:**
 - Media (images/videos) automatically opens when you select a post

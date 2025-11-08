@@ -110,6 +110,14 @@
   function closeMedia(post) {
     if (!post) return;
 
+    // Pause any playing videos
+    const videos = post.querySelectorAll('video');
+    videos.forEach(video => {
+      if (!video.paused) {
+        video.pause();
+      }
+    });
+
     if (isReddit) {
       const expando = post.querySelector('.expando-button');
       if (expando && expando.classList.contains('expanded')) {
@@ -143,6 +151,10 @@
     return false;
   }
 
+  // Track if we're programmatically scrolling
+  let isAutoScrolling = false;
+  let scrollTimeout = null;
+
   // Select a post by index
   function selectPost(index) {
     const posts = getPosts();
@@ -168,6 +180,9 @@
     const hasMedia = openMedia(selectedPost);
     currentExpandedPost = selectedPost;
 
+    // Mark that we're about to auto-scroll
+    isAutoScrolling = true;
+
     // Scroll to center the media if it exists, otherwise center the post
     if (isReddit && hasMedia) {
       // Wait for media to expand, then scroll to it
@@ -184,6 +199,8 @@
             block: 'center'
           });
         }
+        // Reset auto-scroll flag after animation completes
+        setTimeout(() => { isAutoScrolling = false; }, 1000);
       }, 100);
     } else {
       // For Bluesky or posts without media, scroll the post into view
@@ -191,7 +208,54 @@
         behavior: 'smooth',
         block: 'center'
       });
+      // Reset auto-scroll flag after animation completes
+      setTimeout(() => { isAutoScrolling = false; }, 1000);
     }
+  }
+
+  // Check if an element is in or near the viewport
+  function isInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+    // Consider element visible if any part is in viewport or just below
+    return rect.top < windowHeight && rect.bottom > 0;
+  }
+
+  // Find the first post at or below the current scroll position
+  function findPostAtOrBelowViewport() {
+    const posts = getPosts();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    for (let i = 0; i < posts.length; i++) {
+      const rect = posts[i].getBoundingClientRect();
+      const postTop = rect.top + scrollTop;
+
+      // Find first post that starts at or below the top of viewport
+      if (postTop >= scrollTop - 100) {
+        return i;
+      }
+    }
+
+    return posts.length - 1;
+  }
+
+  // Find the last post at or above the current scroll position
+  function findPostAtOrAboveViewport() {
+    const posts = getPosts();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    for (let i = posts.length - 1; i >= 0; i--) {
+      const rect = posts[i].getBoundingClientRect();
+      const postTop = rect.top + scrollTop;
+
+      // Find last post that starts at or above the bottom of viewport
+      if (postTop <= scrollTop + window.innerHeight + 100) {
+        return i;
+      }
+    }
+
+    return 0;
   }
 
   // Navigate to the next post (J key)
@@ -199,9 +263,13 @@
     const posts = getPosts();
     if (posts.length === 0) return;
 
-    if (currentSelectedIndex === -1) {
-      // No selection yet, select the first post
-      selectPost(0);
+    // If no selection or current selection not in viewport, find closest visible post
+    if (currentSelectedIndex === -1 ||
+        currentSelectedIndex >= posts.length ||
+        !isInViewport(posts[currentSelectedIndex])) {
+      // Find first post at or below current scroll position
+      const index = findPostAtOrBelowViewport();
+      selectPost(index);
     } else {
       // Move to next post
       selectPost(currentSelectedIndex + 1);
@@ -213,9 +281,13 @@
     const posts = getPosts();
     if (posts.length === 0) return;
 
-    if (currentSelectedIndex === -1) {
-      // No selection yet, select the first post
-      selectPost(0);
+    // If no selection or current selection not in viewport, find closest visible post
+    if (currentSelectedIndex === -1 ||
+        currentSelectedIndex >= posts.length ||
+        !isInViewport(posts[currentSelectedIndex])) {
+      // Find last post at or above current scroll position
+      const index = findPostAtOrAboveViewport();
+      selectPost(index);
     } else {
       // Move to previous post
       selectPost(currentSelectedIndex - 1);
@@ -520,6 +592,28 @@
     }
   }
 
+  // Handle manual scrolling - clear selection when user scrolls
+  function handleScroll() {
+    // Ignore scroll events that we triggered
+    if (isAutoScrolling) {
+      return;
+    }
+
+    // Debounce scroll events
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      // Check if current selection is out of viewport
+      const posts = getPosts();
+      if (currentSelectedIndex >= 0 && currentSelectedIndex < posts.length) {
+        if (!isInViewport(posts[currentSelectedIndex])) {
+          // Clear selection if scrolled away
+          clearSelection();
+          currentSelectedIndex = -1;
+        }
+      }
+    }, 150);
+  }
+
   // Initialize
   function init() {
     // Only proceed if we're on a supported platform
@@ -532,6 +626,9 @@
 
     // Add keyboard event listener
     document.addEventListener('keydown', handleKeyPress);
+
+    // Add scroll listener to clear selection when user scrolls away
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     // Restore previous selection if returning from comments/link
     restoreSelection();

@@ -425,12 +425,27 @@
 
     // Look for the visible gallery preview (the one currently showing an image)
     const visiblePreview = document.querySelector('.gallery-preview:not([style*="display: none"])');
+    if (!visiblePreview) return;
+
+    // We're in gallery view, navigate to previous image
+    const prevButton = visiblePreview.querySelector('.gallery-nav-prev:not(.gallery-nav-disabled)');
+    if (prevButton) {
+      prevButton.click();
+    }
+  }
+
+  // Navigate to next image in Reddit gallery (] key)
+  function galleryNext() {
+    if (!isReddit) return;
+
+    // Look for the visible gallery preview (the one currently showing an image)
+    const visiblePreview = document.querySelector('.gallery-preview:not([style*="display: none"])');
 
     if (visiblePreview) {
-      // We're in gallery view, navigate to previous image
-      const prevButton = visiblePreview.querySelector('.gallery-nav-prev:not(.gallery-nav-disabled)');
-      if (prevButton) {
-        prevButton.click();
+      // We're in gallery view, navigate to next image
+      const nextButton = visiblePreview.querySelector('.gallery-nav-next:not(.gallery-nav-disabled)');
+      if (nextButton) {
+        nextButton.click();
       }
     } else {
       // We're in grid view, open the first thumbnail
@@ -441,22 +456,6 @@
           firstTile.click();
         }
       }
-    }
-  }
-
-  // Navigate to next image in Reddit gallery (] key)
-  function galleryNext() {
-    if (!isReddit) return;
-
-    // Look for the visible gallery preview (the one currently showing an image)
-    const visiblePreview = document.querySelector('.gallery-preview:not([style*="display: none"])');
-    if (!visiblePreview) return;
-
-    // Find the next navigation item within the visible preview
-    const nextButton = visiblePreview.querySelector('.gallery-nav-next:not(.gallery-nav-disabled)');
-
-    if (nextButton) {
-      nextButton.click();
     }
   }
 

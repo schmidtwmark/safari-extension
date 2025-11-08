@@ -425,13 +425,22 @@
 
     // Look for the visible gallery preview (the one currently showing an image)
     const visiblePreview = document.querySelector('.gallery-preview:not([style*="display: none"])');
-    if (!visiblePreview) return;
 
-    // Find the previous navigation item within the visible preview
-    const prevButton = visiblePreview.querySelector('.gallery-nav-prev:not(.gallery-nav-disabled)');
-
-    if (prevButton) {
-      prevButton.click();
+    if (visiblePreview) {
+      // We're in gallery view, navigate to previous image
+      const prevButton = visiblePreview.querySelector('.gallery-nav-prev:not(.gallery-nav-disabled)');
+      if (prevButton) {
+        prevButton.click();
+      }
+    } else {
+      // We're in grid view, open the first thumbnail
+      const galleryGrid = document.querySelector('.gallery-tiles');
+      if (galleryGrid) {
+        const firstTile = galleryGrid.querySelector('.gallery-tile.gallery-navigation');
+        if (firstTile) {
+          firstTile.click();
+        }
+      }
     }
   }
 

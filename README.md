@@ -66,7 +66,9 @@ iOS Safari extensions require conversion to an app. Follow Apple's guide to crea
 5. Press **C** to open the comments for the current post
 6. Press **L** to open the link in a new tab
 7. Press **H** to hide posts you're not interested in
-8. When viewing image galleries/albums, use **[** and **]** to navigate between images
+8. For image galleries/albums:
+   - Press **[** to open the first image (when viewing the grid)
+   - Use **[** and **]** to navigate between images (when in gallery view)
 
 ### On Bluesky (bsky.app):
 1. Navigate to bsky.app

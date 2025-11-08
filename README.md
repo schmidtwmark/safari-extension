@@ -17,6 +17,8 @@ Navigate old Reddit with powerful keyboard shortcuts:
 - Media (images/videos) automatically opens when you select a post
 - Media automatically closes when you navigate to a different post
 - Selected post is highlighted with a blue outline for easy visibility
+- Promoted/sponsored posts are automatically hidden
+- Selection is restored when returning from comments page (using browser back button)
 
 ## Installation
 

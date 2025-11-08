@@ -423,17 +423,15 @@
   function galleryPrevious() {
     if (!isReddit) return;
 
-    // Look for the previous button in an open gallery
-    // Reddit galleries have different selectors depending on the type
-    const prevButton = document.querySelector('.gallery-preview .next-button, .gallery-preview .previous-button, button[aria-label*="revious"], button[aria-label*="Previous"]');
+    // Look for the visible gallery preview (the one currently showing an image)
+    const visiblePreview = document.querySelector('.gallery-preview:not([style*="display: none"])');
+    if (!visiblePreview) return;
 
-    // Also check for lightbox gallery
-    const lightboxPrev = document.querySelector('.lightbox .previous-button, .lightbox button[aria-label*="revious"]');
+    // Find the previous navigation item within the visible preview
+    const prevButton = visiblePreview.querySelector('.gallery-nav-prev:not(.gallery-nav-disabled)');
 
-    if (prevButton && prevButton.getAttribute('aria-label')?.toLowerCase().includes('previous')) {
+    if (prevButton) {
       prevButton.click();
-    } else if (lightboxPrev) {
-      lightboxPrev.click();
     }
   }
 
@@ -441,16 +439,15 @@
   function galleryNext() {
     if (!isReddit) return;
 
-    // Look for the next button in an open gallery
-    const nextButton = document.querySelector('.gallery-preview .next-button, button[aria-label*="ext"], button[aria-label*="Next"]');
+    // Look for the visible gallery preview (the one currently showing an image)
+    const visiblePreview = document.querySelector('.gallery-preview:not([style*="display: none"])');
+    if (!visiblePreview) return;
 
-    // Also check for lightbox gallery
-    const lightboxNext = document.querySelector('.lightbox .next-button, .lightbox button[aria-label*="ext"]');
+    // Find the next navigation item within the visible preview
+    const nextButton = visiblePreview.querySelector('.gallery-nav-next:not(.gallery-nav-disabled)');
 
-    if (nextButton && nextButton.getAttribute('aria-label')?.toLowerCase().includes('next')) {
+    if (nextButton) {
       nextButton.click();
-    } else if (lightboxNext) {
-      lightboxNext.click();
     }
   }
 

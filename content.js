@@ -224,8 +224,9 @@
       // On Bluesky, offset for the fixed header
       if (isBluesky) {
         setTimeout(() => {
-          const header = document.querySelector('header[role="banner"]');
-          if (header) {
+          const feedTabs = document.querySelector('[data-testid="homeScreenFeedTabs"]');
+          if (feedTabs) {
+            const header = feedTabs.parentElement;
             const headerHeight = header.offsetHeight;
             const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
             window.scrollTo({

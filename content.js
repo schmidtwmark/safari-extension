@@ -212,7 +212,7 @@
           block: 'start'
         });
         // Reset auto-scroll flag after animation completes
-        setTimeout(() => { isAutoScrolling = false; }, 1000);
+        setTimeout(() => { isAutoScrolling = false; }, 500);
       }, 100);
     } else if (isBluesky) {
       // For Bluesky, calculate position accounting for fixed header and do single scroll
@@ -229,7 +229,7 @@
       });
 
       // Reset auto-scroll flag after animation completes
-      setTimeout(() => { isAutoScrolling = false; }, 1000);
+      setTimeout(() => { isAutoScrolling = false; }, 500);
     } else {
       // For Reddit posts without media, scroll the post into view
       selectedPost.scrollIntoView({
@@ -238,7 +238,7 @@
       });
 
       // Reset auto-scroll flag after animation completes
-      setTimeout(() => { isAutoScrolling = false; }, 1000);
+      setTimeout(() => { isAutoScrolling = false; }, 500);
     }
   }
 
@@ -289,6 +289,9 @@
 
   // Navigate to the next post (J key)
   function navigateDown() {
+    // Prevent navigation while a scroll is in progress
+    if (isAutoScrolling) return;
+
     const posts = getPosts();
     if (posts.length === 0) return;
 
@@ -307,6 +310,9 @@
 
   // Navigate to the previous post (K key)
   function navigateUp() {
+    // Prevent navigation while a scroll is in progress
+    if (isAutoScrolling) return;
+
     const posts = getPosts();
     if (posts.length === 0) return;
 

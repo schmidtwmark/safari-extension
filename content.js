@@ -165,10 +165,8 @@
     if (index < 0) index = 0;
     if (index >= posts.length) index = posts.length - 1;
 
-    // Close media on the previously selected post (Reddit only)
-    if (currentExpandedPost && isReddit) {
-      closeMedia(currentExpandedPost);
-    }
+    // Save reference to previously expanded post before clearing selection
+    const previousExpandedPost = currentExpandedPost;
 
     clearSelection();
     currentSelectedIndex = index;
@@ -199,6 +197,13 @@
             block: 'center'
           });
         }
+
+        // Close media on the previously selected post AFTER scrolling (Reddit only)
+        // This prevents viewport jump when closing large media
+        if (previousExpandedPost && previousExpandedPost !== selectedPost && isReddit) {
+          closeMedia(previousExpandedPost);
+        }
+
         // Reset auto-scroll flag after animation completes
         setTimeout(() => { isAutoScrolling = false; }, 1000);
       }, 100);
@@ -208,6 +213,12 @@
         behavior: 'smooth',
         block: 'center'
       });
+
+      // Close media on the previously selected post AFTER scrolling (Reddit only)
+      if (previousExpandedPost && previousExpandedPost !== selectedPost && isReddit) {
+        closeMedia(previousExpandedPost);
+      }
+
       // Reset auto-scroll flag after animation completes
       setTimeout(() => { isAutoScrolling = false; }, 1000);
     }

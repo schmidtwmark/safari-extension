@@ -168,6 +168,28 @@
     // Save reference to previously expanded post before clearing selection
     const previousExpandedPost = currentExpandedPost;
 
+    // Close media on the previously selected post BEFORE scrolling (Reddit only)
+    // But compensate for viewport shift to prevent jump
+    if (previousExpandedPost && previousExpandedPost !== posts[index] && isReddit) {
+      // Save current scroll position and the position of the previous post
+      const scrollBefore = window.pageYOffset || document.documentElement.scrollTop;
+      const previousRect = previousExpandedPost.getBoundingClientRect();
+      const previousTop = previousRect.top + scrollBefore;
+
+      // Close the media
+      closeMedia(previousExpandedPost);
+
+      // If we're scrolled below the previous post, compensate for the height change
+      // to prevent the viewport from jumping
+      if (scrollBefore > previousTop) {
+        const scrollAfter = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollDiff = scrollBefore - scrollAfter;
+        if (scrollDiff !== 0) {
+          window.scrollTo(0, scrollAfter + scrollDiff);
+        }
+      }
+    }
+
     clearSelection();
     currentSelectedIndex = index;
 
@@ -197,13 +219,6 @@
             block: 'center'
           });
         }
-
-        // Close media on the previously selected post AFTER scrolling (Reddit only)
-        // This prevents viewport jump when closing large media
-        if (previousExpandedPost && previousExpandedPost !== selectedPost && isReddit) {
-          closeMedia(previousExpandedPost);
-        }
-
         // Reset auto-scroll flag after animation completes
         setTimeout(() => { isAutoScrolling = false; }, 1000);
       }, 100);
@@ -213,12 +228,6 @@
         behavior: 'smooth',
         block: 'center'
       });
-
-      // Close media on the previously selected post AFTER scrolling (Reddit only)
-      if (previousExpandedPost && previousExpandedPost !== selectedPost && isReddit) {
-        closeMedia(previousExpandedPost);
-      }
-
       // Reset auto-scroll flag after animation completes
       setTimeout(() => { isAutoScrolling = false; }, 1000);
     }

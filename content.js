@@ -203,22 +203,14 @@
     // Mark that we're about to auto-scroll
     isAutoScrolling = true;
 
-    // Scroll to center the media if it exists, otherwise center the post
+    // Scroll to align the top of the post with the top of the viewport
     if (isReddit && hasMedia) {
-      // Wait for media to expand, then scroll to it
+      // Wait for media to expand, then scroll to post
       setTimeout(() => {
-        const expando = selectedPost.querySelector('.expando');
-        if (expando) {
-          expando.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
-        } else {
-          selectedPost.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
-        }
+        selectedPost.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
         // Reset auto-scroll flag after animation completes
         setTimeout(() => { isAutoScrolling = false; }, 1000);
       }, 100);
@@ -226,7 +218,7 @@
       // For Bluesky or posts without media, scroll the post into view
       selectedPost.scrollIntoView({
         behavior: 'smooth',
-        block: 'center'
+        block: 'start'
       });
       // Reset auto-scroll flag after animation completes
       setTimeout(() => { isAutoScrolling = false; }, 1000);

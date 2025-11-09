@@ -214,28 +214,28 @@
         // Reset auto-scroll flag after animation completes
         setTimeout(() => { isAutoScrolling = false; }, 1000);
       }, 100);
+    } else if (isBluesky) {
+      // For Bluesky, calculate position accounting for fixed header and do single scroll
+      const feedTabs = document.querySelector('[data-testid="homeScreenFeedTabs"]');
+      const headerHeight = feedTabs ? feedTabs.parentElement.offsetHeight : 0;
+
+      const rect = selectedPost.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const targetPosition = rect.top + scrollTop - headerHeight;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+
+      // Reset auto-scroll flag after animation completes
+      setTimeout(() => { isAutoScrolling = false; }, 1000);
     } else {
-      // For Bluesky or posts without media, scroll the post into view
+      // For Reddit posts without media, scroll the post into view
       selectedPost.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
-
-      // On Bluesky, offset for the fixed header
-      if (isBluesky) {
-        setTimeout(() => {
-          const feedTabs = document.querySelector('[data-testid="homeScreenFeedTabs"]');
-          if (feedTabs) {
-            const header = feedTabs.parentElement;
-            const headerHeight = header.offsetHeight;
-            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-            window.scrollTo({
-              top: currentScroll - headerHeight,
-              behavior: 'smooth'
-            });
-          }
-        }, 50);
-      }
 
       // Reset auto-scroll flag after animation completes
       setTimeout(() => { isAutoScrolling = false; }, 1000);

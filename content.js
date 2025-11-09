@@ -154,6 +154,21 @@
   // Track if we're programmatically scrolling
   let isAutoScrolling = false;
   let scrollTimeout = null;
+  let scrollEndTimeout = null;
+
+  // Detect when scroll animation completes
+  function onScrollEnd() {
+    // Clear any existing timeout
+    if (scrollEndTimeout) {
+      clearTimeout(scrollEndTimeout);
+    }
+
+    // Set a timeout to detect scroll end
+    // If scroll position doesn't change for 100ms, consider it done
+    scrollEndTimeout = setTimeout(() => {
+      isAutoScrolling = false;
+    }, 100);
+  }
 
   // Select a post by index
   function selectPost(index) {
@@ -211,8 +226,8 @@
           behavior: 'smooth',
           block: 'start'
         });
-        // Reset auto-scroll flag after animation completes
-        setTimeout(() => { isAutoScrolling = false; }, 500);
+        // Trigger scroll end detection
+        onScrollEnd();
       }, 100);
     } else if (isBluesky) {
       // For Bluesky, calculate position accounting for fixed header and do single scroll
@@ -228,8 +243,8 @@
         behavior: 'smooth'
       });
 
-      // Reset auto-scroll flag after animation completes
-      setTimeout(() => { isAutoScrolling = false; }, 500);
+      // Trigger scroll end detection
+      onScrollEnd();
     } else {
       // For Reddit posts without media, scroll the post into view
       selectedPost.scrollIntoView({
@@ -237,8 +252,8 @@
         block: 'start'
       });
 
-      // Reset auto-scroll flag after animation completes
-      setTimeout(() => { isAutoScrolling = false; }, 500);
+      // Trigger scroll end detection
+      onScrollEnd();
     }
   }
 
@@ -629,8 +644,9 @@
 
   // Handle manual scrolling - clear selection when user scrolls
   function handleScroll() {
-    // Ignore scroll events that we triggered
+    // If we're auto-scrolling, detect when it ends
     if (isAutoScrolling) {
+      onScrollEnd();
       return;
     }
 

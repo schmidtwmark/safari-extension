@@ -220,6 +220,22 @@
         behavior: 'smooth',
         block: 'start'
       });
+
+      // On Bluesky, offset for the fixed header
+      if (isBluesky) {
+        setTimeout(() => {
+          const header = document.querySelector('header[role="banner"]');
+          if (header) {
+            const headerHeight = header.offsetHeight;
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            window.scrollTo({
+              top: currentScroll - headerHeight,
+              behavior: 'smooth'
+            });
+          }
+        }, 50);
+      }
+
       // Reset auto-scroll flag after animation completes
       setTimeout(() => { isAutoScrolling = false; }, 1000);
     }

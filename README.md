@@ -26,6 +26,7 @@ Navigate Reddit and Bluesky with powerful keyboard shortcuts:
 - Media automatically closes when you navigate to a different post
 - Promoted/sponsored posts are automatically hidden
 - Navigate through image galleries/albums with [ and ] keys
+- Subreddit custom styles are automatically blocked (uses default Reddit styling)
 
 **Bluesky-Specific Features:**
 - Navigate through your feed with keyboard shortcuts

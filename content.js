@@ -665,12 +665,37 @@
     }, 150);
   }
 
+  // Block subreddit custom styles (Reddit only)
+  function blockSubredditStyles() {
+    if (!isReddit) return;
+
+    // Remove subreddit stylesheet links
+    const stylesheets = document.querySelectorAll('link[rel="stylesheet"][title="applied_subreddit_stylesheet"]');
+    stylesheets.forEach(link => link.remove());
+
+    // Also remove any inline styles added by subreddits
+    const inlineStyles = document.querySelectorAll('style[title="applied_subreddit_stylesheet"]');
+    inlineStyles.forEach(style => style.remove());
+
+    // Remove the stylesheet preference from the page if it exists
+    const styleToggle = document.querySelector('.stylesheet-customize-container');
+    if (styleToggle) {
+      const checkbox = styleToggle.querySelector('input[type="checkbox"]');
+      if (checkbox && checkbox.checked) {
+        checkbox.click();
+      }
+    }
+  }
+
   // Initialize
   function init() {
     // Only proceed if we're on a supported platform
     if (!isReddit && !isBluesky) {
       return;
     }
+
+    // Block subreddit styles on Reddit
+    blockSubredditStyles();
 
     // Hide promoted posts
     hidePromotedPosts();

@@ -6,9 +6,9 @@ A lightweight Safari extension that brings essential keyboard navigation to Redd
 
 Navigate Reddit and Bluesky with powerful keyboard shortcuts:
 
-- **J** - Navigate down to the next post
-- **K** - Navigate up to the previous post
-- **H** - Hide the currently selected post
+- **J** - Navigate down to the next post/comment
+- **K** - Navigate up to the previous post/comment
+- **H** - Hide the currently selected post/comment
 - **C** - Open comments/post (same tab)
 - **L** - Open link (new tab)
 - **[** - Previous image in gallery (Reddit only)
@@ -22,6 +22,7 @@ Navigate Reddit and Bluesky with powerful keyboard shortcuts:
 - Videos automatically pause when navigating away from a post
 
 **Reddit-Specific Features:**
+- Navigate through both posts (on main feed) and comments (on comment pages)
 - Media (images/videos) automatically opens when you select a post
 - Media automatically closes when you navigate to a different post
 - Promoted/sponsored posts are automatically hidden

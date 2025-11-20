@@ -12,9 +12,17 @@
   const isReddit = window.location.hostname.includes('reddit.com');
   const isBluesky = window.location.hostname.includes('bsky.app');
 
+  // Detect if we're on a Reddit comments page
+  const isRedditComments = isReddit && window.location.pathname.includes('/comments/');
+
   // Get all post elements on the page
   function getPosts() {
     if (isReddit) {
+      // On comments page, navigate through comments
+      if (isRedditComments) {
+        return Array.from(document.querySelectorAll('.thing.comment:not(.hidden)'));
+      }
+      // On main feed, navigate through posts
       // In old Reddit, posts are .thing elements with .link class
       // Exclude promoted posts
       return Array.from(document.querySelectorAll('.thing.link:not(.hidden):not(.promoted)'));
@@ -118,6 +126,9 @@
       }
     });
 
+    // Don't try to close media on comments
+    if (isRedditComments) return;
+
     if (isReddit) {
       const expando = post.querySelector('.expando-button');
       if (expando && expando.classList.contains('expanded')) {
@@ -135,6 +146,9 @@
   // Open media for a post
   function openMedia(post) {
     if (!post) return false;
+
+    // Don't try to open media on comments
+    if (isRedditComments) return false;
 
     if (isReddit) {
       const expando = post.querySelector('.expando-button');

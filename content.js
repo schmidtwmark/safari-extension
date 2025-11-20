@@ -687,6 +687,34 @@
     }
   }
 
+  // Handle clicks on Reddit media expando buttons
+  function handleExpandoClick(event) {
+    if (!isReddit) return;
+
+    // Check if clicked element is an expando button or its child
+    const expando = event.target.closest('.expando-button');
+    if (!expando) return;
+
+    // Find which post this expando belongs to
+    const post = expando.closest('.thing');
+    if (!post) return;
+
+    // Find the index of this post
+    const posts = getPosts();
+    const postIndex = Array.from(posts).indexOf(post);
+
+    if (postIndex !== -1) {
+      // Select this post (but don't open media again since user just clicked)
+      clearSelection();
+      currentSelectedIndex = postIndex;
+      post.classList.add(SELECTED_CLASS);
+      currentExpandedPost = post;
+
+      // Save selection for when returning from links
+      saveSelection();
+    }
+  }
+
   // Initialize
   function init() {
     // Only proceed if we're on a supported platform
@@ -705,6 +733,11 @@
 
     // Add scroll listener to clear selection when user scrolls away
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Add click listener for Reddit media expando buttons
+    if (isReddit) {
+      document.addEventListener('click', handleExpandoClick, true);
+    }
 
     // Restore previous selection if returning from comments/link
     restoreSelection();
